@@ -28,12 +28,15 @@ union header_data {
 };
 
 
+void verify_machine(void);
 void verify_data(char *file_name, union header_data *file_bytes);
 void print_header_data(union header_data *file_bytes);
 
 /* Print header data of a .wav file */
 int main(int argc, char *argv[]) {
   FILE *fp;
+
+  verify_machine();
   
   if (argc != 2) {
     printf("Usage: wave <file>\n");
@@ -65,6 +68,44 @@ int main(int argc, char *argv[]) {
   free(file_bytes);
   return 0;
 }
+
+
+int is_bigendian(void); 
+
+/* Program works under the assumption that `int` is 4 bytes long
+ * and `short` is 2 bytes long */
+void verify_machine() {
+  if (sizeof(int) != 4) {
+    fprintf(stderr, "Error: machine data type INT isn't 4 bytes long\nCan't process wav header ");
+    exit(4);
+  }
+
+  if (sizeof(short) != 2) {
+    fprintf(stderr, "Error: machine data type SHORT isn't 2 bytes long\nCan't process wav header");
+    exit(4);
+  }
+
+  if (is_bigendian())
+    printf("Warning: machine isn't little endian\n"
+           "Numerical values of the header will show incorrect values");
+}
+
+
+/* Machine should be little-endian to show header's numerical values correctly */
+int is_bigendian() {
+  union {
+    char bytes[4];
+    int val;
+  } test;
+
+  test.bytes[0] = 0;
+  test.bytes[1] = 0;
+  test.bytes[2] = 0;
+  test.bytes[3] = 0xff;
+ 
+  return test.val == 0xff;
+}
+
 
 void verify_data(char *file_name, union header_data *file_bytes) {
 
