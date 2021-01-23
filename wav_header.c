@@ -28,6 +28,8 @@ union header_data {
 };
 
 
+void verify_data(char *file_name, union header_data *file_bytes);
+
 /* Print the header of a .wav file */
 int main(int argc, char *argv[]) {
   FILE *fp;
@@ -40,14 +42,22 @@ int main(int argc, char *argv[]) {
   fp = fopen(argv[1], "r");
 
   if (fp == NULL) {
-    printf("Invalid file or path: %s\n", argv[1]);
+    fprintf(stderr, "Error: Invalid file or path: %s\n", argv[1]);
     return 2;
   }
 
   union header_data *file_bytes = (union header_data *) malloc(sizeof(union header_data));
+  
   int i;
   for (i = 0; i < HEADER_SIZE && (file_bytes->data[i] = getc(fp)) != EOF; i++)
     ;
+
+  if (i != HEADER_SIZE) {
+    fprintf(stderr, "Error: file %s header data incomplete\n", argv[1]);
+    exit(3);
+  }
+    
+  verify_data(argv[1], file_bytes);
 
   printf("ChunkID: %.4s\n", file_bytes->header.chunk_id);
   printf("ChunkSize: %d\n", file_bytes->header.chunk_size);
@@ -63,5 +73,30 @@ int main(int argc, char *argv[]) {
   printf("Subchunk2 Id: %.4s\n", file_bytes->header.subchunk2_id);
   printf("Subchunk2 size: %d\n", file_bytes->header.subchunk2_size);
 
+  fclose(fp);
+  free(file_bytes);
   return 0;
+}
+
+void verify_data(char *file_name, union header_data *file_bytes) {
+
+  /* Need to copy char array to another buffer because the
+  *  end char '\0' isn't present */
+  char text[5];
+  text[4] = '\0';
+  if (strcmp(strncpy(text, file_bytes->header.chunk_id, 4), "RIFF") != 0) {
+    fprintf(stderr, "Error: file %s isn't in RIFF (WAV container) format\n", file_name);
+    exit(3);
+  }
+
+  if (strcmp(strncpy(text, file_bytes->header.format, 4), "WAVE") != 0) {
+    fprintf(stderr, "Error: file %s isn't in WAVE format", file_name);
+    exit(3);
+  }
+
+  if (strcmp(strncpy(text, file_bytes->header.subchunk2_id, 4), "data") != 0) {
+    fprintf(stderr, "Error: file %s header is not in canonical form\n"
+           "Extra or missing header data\n", file_name);
+    exit(3);
+  }
 }
