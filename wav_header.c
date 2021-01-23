@@ -85,9 +85,6 @@ void verify_machine() {
     exit(4);
   }
 
-  if (is_bigendian())
-    printf("Warning: machine isn't little endian\n"
-           "Numerical values of the header will show incorrect values");
 }
 
 
