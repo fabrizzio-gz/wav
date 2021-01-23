@@ -117,8 +117,30 @@ int is_bigendian() {
 }
 
 
+void reverse(char *s, int len);
+
 void reverse_numerical_bytes(union header_data *file_bytes) {
+  reverse(file_bytes->header.chunk_size.int_bytes, 4);
+  reverse(file_bytes->header.subchunk1_size.int_bytes, 4);
+  reverse(file_bytes->header.audio_format.short_bytes, 2);
+  reverse(file_bytes->header.num_channels.short_bytes, 2);
+  reverse(file_bytes->header.sample_rate.int_bytes, 4);
+  reverse(file_bytes->header.byte_rate.int_bytes, 4);
+  reverse(file_bytes->header.block_align.short_bytes, 2);
+  reverse(file_bytes->header.bits_per_sample.short_bytes, 2);
+  reverse(file_bytes->header.subchunk2_size.int_bytes, 4);
 }
+
+void reverse(char *s, int l) {
+  char c;
+  int i;
+  for (i=0; i<l/2; i++) {
+    c = s[i];
+    s[i] = s[l-1-i];
+    s[l-1-i] = c;
+  }
+}
+
 
 void verify_data(char *file_name, union header_data *file_bytes) {
 
