@@ -29,8 +29,9 @@ union header_data {
 
 
 void verify_data(char *file_name, union header_data *file_bytes);
+void print_header_data(union header_data *file_bytes);
 
-/* Print the header of a .wav file */
+/* Print header data of a .wav file */
 int main(int argc, char *argv[]) {
   FILE *fp;
   
@@ -58,20 +59,7 @@ int main(int argc, char *argv[]) {
   }
     
   verify_data(argv[1], file_bytes);
-
-  printf("ChunkID: %.4s\n", file_bytes->header.chunk_id);
-  printf("ChunkSize: %d\n", file_bytes->header.chunk_size);
-  printf("Format: %.4s\n", file_bytes->header.format);
-  printf("Subchunk1 ID: %.4s\n", file_bytes->header.subchunk1_id);
-  printf("Subchunk1 Size: %d\n", file_bytes->header.subchunk1_size);
-  printf("Audio Format: %d\n", file_bytes->header.audio_format);
-  printf("Num Channels: %d\n", file_bytes->header.num_channels);
-  printf("Sample Rate: %d\n", file_bytes->header.sample_rate);
-  printf("ByteRate: %d\n", file_bytes->header.byte_rate);
-  printf("Block Align: %d\n", file_bytes->header.block_align);
-  printf("Bits per sample: %d\n", file_bytes->header.bits_per_sample);
-  printf("Subchunk2 Id: %.4s\n", file_bytes->header.subchunk2_id);
-  printf("Subchunk2 size: %d\n", file_bytes->header.subchunk2_size);
+  print_header_data(file_bytes);
 
   fclose(fp);
   free(file_bytes);
@@ -100,3 +88,22 @@ void verify_data(char *file_name, union header_data *file_bytes) {
     exit(3);
   }
 }
+
+void print_header_data(union header_data *file_bytes) {
+  
+  printf("ChunkID: %.4s\n", file_bytes->header.chunk_id);
+  printf("ChunkSize: %d\n", file_bytes->header.chunk_size);
+  printf("Format: %.4s\n", file_bytes->header.format);
+  printf("Subchunk1 ID: %.4s\n", file_bytes->header.subchunk1_id);
+  printf("Subchunk1 Size: %d\n", file_bytes->header.subchunk1_size);
+  printf("Audio Format: %d\n", file_bytes->header.audio_format);
+  printf("Num Channels: %d\n", file_bytes->header.num_channels);
+  printf("Sample Rate: %d\n", file_bytes->header.sample_rate);
+  printf("ByteRate: %d\n", file_bytes->header.byte_rate);
+  printf("Block Align: %d\n", file_bytes->header.block_align);
+  printf("Bits per sample: %d\n", file_bytes->header.bits_per_sample);
+  printf("Subchunk2 Id: %.4s\n", file_bytes->header.subchunk2_id);
+  printf("Subchunk2 size: %d\n", file_bytes->header.subchunk2_size);
+  
+}
+
