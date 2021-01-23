@@ -22,13 +22,24 @@ int main(int argc, char *argv[]) {
   char chunkId[5];
   int file_char;
   int c = 0;
-  while ((file_char = getc(fp)) != EOF && c < 4) 
+  while (c < 4 && (file_char = getc(fp)) != EOF) 
     chunkId[c++] = (char) file_char;
   
   if (strcmp(chunkId, "RIFF") != 0) {
-    printf("Error: File %s isn't in RIFF format", argv[1]);
+    printf("Error: File %s isn't in RIFF format\n", argv[1]);
     return 3;
   }
+
+  /* Get file size: 4 bytes */
+  char size_bytes[4];
+  c = 0;
+  while (c < 4 && (file_char = getc(fp)) != EOF)
+    size_bytes[c++] = (char) file_char;
+
+  /* Works only on little endian machines */
+  int *size = &size_bytes;
+
+  printf("Size is: %d\n", *size + 8);
 
   printf("OK\n");
   fclose(fp);
