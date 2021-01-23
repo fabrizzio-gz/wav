@@ -4,7 +4,7 @@
 
 #define HEADER_SIZE 44
 
-typedef char byte;
+typedef unsigned char byte;
 
 union int_data {
   int int_value;
