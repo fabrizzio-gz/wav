@@ -146,18 +146,18 @@ void verify_data(char *file_name, union header_data *file_bytes) {
 void print_header_data(union header_data *file_bytes) {
   
   printf("ChunkID: %.4s\n", file_bytes->header.chunk_id);
-  printf("ChunkSize: %d\n", file_bytes->header.chunk_size);
+  printf("ChunkSize: %d\n", file_bytes->header.chunk_size.int_value);
   printf("Format: %.4s\n", file_bytes->header.format);
   printf("Subchunk1 ID: %.4s\n", file_bytes->header.subchunk1_id);
-  printf("Subchunk1 Size: %d\n", file_bytes->header.subchunk1_size);
-  printf("Audio Format: %d\n", file_bytes->header.audio_format);
-  printf("Num Channels: %d\n", file_bytes->header.num_channels);
-  printf("Sample Rate: %d\n", file_bytes->header.sample_rate);
-  printf("ByteRate: %d\n", file_bytes->header.byte_rate);
-  printf("Block Align: %d\n", file_bytes->header.block_align);
-  printf("Bits per sample: %d\n", file_bytes->header.bits_per_sample);
+  printf("Subchunk1 Size: %d\n", file_bytes->header.subchunk1_size.int_value);
+  printf("Audio Format: %d\n", file_bytes->header.audio_format.short_value);
+  printf("Num Channels: %d\n", file_bytes->header.num_channels.short_value);
+  printf("Sample Rate: %d\n", file_bytes->header.sample_rate.int_value);
+  printf("ByteRate: %d\n", file_bytes->header.byte_rate.int_value);
+  printf("Block Align: %d\n", file_bytes->header.block_align.short_value);
+  printf("Bits per sample: %d\n", file_bytes->header.bits_per_sample.short_value);
   printf("Subchunk2 Id: %.4s\n", file_bytes->header.subchunk2_id);
-  printf("Subchunk2 size: %d\n", file_bytes->header.subchunk2_size);
+  printf("Subchunk2 size: %d\n", file_bytes->header.subchunk2_size.int_value);
   
 }
 
