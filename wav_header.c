@@ -49,19 +49,19 @@ int main(int argc, char *argv[]) {
   for (i = 0; i < HEADER_SIZE && (file_bytes->data[i] = getc(fp)) != EOF; i++)
     ;
 
-  printf("%.4s\n", file_bytes->header.chunk_id);
-  printf("%d\n", file_bytes->header.chunk_size);
-  printf("%.4s\n", file_bytes->header.format);
-  printf("%.4s\n", file_bytes->header.subchunk1_id);
-  printf("%d\n", file_bytes->header.subchunk1_size);
-  printf("%d\n", file_bytes->header.audio_format);
-  printf("%d\n", file_bytes->header.num_channels);
-  printf("%d\n", file_bytes->header.sample_rate);
-  printf("%d\n", file_bytes->header.byte_rate);
-  printf("%d\n", file_bytes->header.block_align);
-  printf("%d\n", file_bytes->header.bits_per_sample);
-  printf("%.4s\n", file_bytes->header.subchunk2_id);
-  printf("%d\n", file_bytes->header.subchunk2_size);
+  printf("ChunkID: %.4s\n", file_bytes->header.chunk_id);
+  printf("ChunkSize: %d\n", file_bytes->header.chunk_size);
+  printf("Format: %.4s\n", file_bytes->header.format);
+  printf("Subchunk1 ID: %.4s\n", file_bytes->header.subchunk1_id);
+  printf("Subchunk1 Size: %d\n", file_bytes->header.subchunk1_size);
+  printf("Audio Format: %d\n", file_bytes->header.audio_format);
+  printf("Num Channels: %d\n", file_bytes->header.num_channels);
+  printf("Sample Rate: %d\n", file_bytes->header.sample_rate);
+  printf("ByteRate: %d\n", file_bytes->header.byte_rate);
+  printf("Block Align: %d\n", file_bytes->header.block_align);
+  printf("Bits per sample: %d\n", file_bytes->header.bits_per_sample);
+  printf("Subchunk2 Id: %.4s\n", file_bytes->header.subchunk2_id);
+  printf("Subchunk2 size: %d\n", file_bytes->header.subchunk2_size);
 
   return 0;
 }
