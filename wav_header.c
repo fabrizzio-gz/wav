@@ -22,6 +22,11 @@ struct header_struct {
   int subchunk2_size;
 };
 
+union header_data {
+  byte data[HEADER_SIZE];
+  struct header_struct header;
+};
+
 
 /* Print the header of a .wav file */
 int main(int argc, char *argv[]) {
@@ -39,26 +44,24 @@ int main(int argc, char *argv[]) {
     return 2;
   }
 
-  byte file_bytes[HEADER_SIZE];
+  union header_data *file_bytes = (union header_data *) malloc(sizeof(union header_data));
   int i;
-  for (i = 0; i < HEADER_SIZE && (file_bytes[i] = getc(fp)) != EOF; i++)
+  for (i = 0; i < HEADER_SIZE && (file_bytes->data[i] = getc(fp)) != EOF; i++)
     ;
 
-  struct header_struct *header = &file_bytes;
-
-  printf("%.4s\n", header->chunk_id);
-  printf("%d\n", header->chunk_size);
-  printf("%.4s\n", header->format);
-  printf("%.4s\n", header->subchunk1_id);
-  printf("%d\n", header->subchunk1_size);
-  printf("%d\n", header->audio_format);
-  printf("%d\n", header->num_channels);
-  printf("%d\n", header->sample_rate);
-  printf("%d\n", header->byte_rate);
-  printf("%d\n", header->block_align);
-  printf("%d\n", header->bits_per_sample);
-  printf("%.4s\n", header->subchunk2_id);
-  printf("%d\n", header->subchunk2_size);
+  printf("%.4s\n", file_bytes->header.chunk_id);
+  printf("%d\n", file_bytes->header.chunk_size);
+  printf("%.4s\n", file_bytes->header.format);
+  printf("%.4s\n", file_bytes->header.subchunk1_id);
+  printf("%d\n", file_bytes->header.subchunk1_size);
+  printf("%d\n", file_bytes->header.audio_format);
+  printf("%d\n", file_bytes->header.num_channels);
+  printf("%d\n", file_bytes->header.sample_rate);
+  printf("%d\n", file_bytes->header.byte_rate);
+  printf("%d\n", file_bytes->header.block_align);
+  printf("%d\n", file_bytes->header.bits_per_sample);
+  printf("%.4s\n", file_bytes->header.subchunk2_id);
+  printf("%d\n", file_bytes->header.subchunk2_size);
 
   return 0;
 }
