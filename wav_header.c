@@ -6,20 +6,30 @@
 
 typedef char byte;
 
+union int_data {
+  int int_value;
+  byte int_bytes[4];
+};
+
+union short_data {
+  short short_value;
+  byte short_bytes[2];
+};
+
 struct header_struct {
   char chunk_id[4];
-  int chunk_size;
+  union int_data chunk_size;
   char format[4];
   char subchunk1_id[4];
-  int subchunk1_size;
-  short audio_format;
-  short num_channels;
-  int sample_rate;
-  int byte_rate;
-  short block_align;
-  short bits_per_sample;
+  union int_data subchunk1_size;
+  union short_data audio_format;
+  union short_data num_channels;
+  union int_data sample_rate;
+  union int_data byte_rate;
+  union short_data block_align;
+  union short_data bits_per_sample;
   char subchunk2_id[4];
-  int subchunk2_size;
+  union int_data subchunk2_size;
 };
 
 union header_data {
@@ -29,7 +39,9 @@ union header_data {
 
 
 void verify_machine(void);
+int is_bigendian(void);
 void verify_data(char *file_name, union header_data *file_bytes);
+void reverse_numerical_bytes(union header_data *file_bytes);
 void print_header_data(union header_data *file_bytes);
 
 /* Print header data of a .wav file */
@@ -60,6 +72,9 @@ int main(int argc, char *argv[]) {
     fprintf(stderr, "Error: file %s header data incomplete\n", argv[1]);
     exit(3);
   }
+
+  if (is_bigendian())
+    reverse_numerical_bytes(file_bytes);
     
   verify_data(argv[1], file_bytes);
   print_header_data(file_bytes);
@@ -69,8 +84,6 @@ int main(int argc, char *argv[]) {
   return 0;
 }
 
-
-int is_bigendian(void); 
 
 /* Program works under the assumption that `int` is 4 bytes long
  * and `short` is 2 bytes long */
@@ -103,6 +116,9 @@ int is_bigendian() {
   return test.val == 0xff;
 }
 
+
+void reverse_numerical_bytes(union header_data *file_bytes) {
+}
 
 void verify_data(char *file_name, union header_data *file_bytes) {
 
