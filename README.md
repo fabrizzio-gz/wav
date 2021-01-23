@@ -1,6 +1,6 @@
 # Process WAVE files
 
-Retrieve WAVE (WAV) files header and samples data.
+Retrieve WAVE (WAV) files header data and samples.
 
 ## Retrieve the header data
 
@@ -19,3 +19,8 @@ Execute on files as:
 ```
 ./wave my_file.wav
 ```
+
+## Retrive samples
+
+TODO
+
