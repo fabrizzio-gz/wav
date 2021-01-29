@@ -4,9 +4,10 @@
 
 #include "wav_types.h"
 #include "wav_header.h"
+#include "helper_functions.h"
 
 
-void verify_machine(void);
+// void verify_machine(void);
 
 /* Print header data of a .wav file */
 int main(int argc, char *argv[]) {
@@ -33,21 +34,5 @@ int main(int argc, char *argv[]) {
   fclose(fp);
   free(file_bytes);
   return 0;
-}
-
-
-/* Program works under the assumption that `int` is 4 bytes long
- * and `short` is 2 bytes long */
-void verify_machine() {
-  if (sizeof(int) != 4) {
-    fprintf(stderr, "Error: machine data type INT isn't 4 bytes long\nCan't process wav header ");
-    exit(4);
-  }
-
-  if (sizeof(short) != 2) {
-    fprintf(stderr, "Error: machine data type SHORT isn't 2 bytes long\nCan't process wav header");
-    exit(4);
-  }
-
 }
 

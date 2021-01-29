@@ -3,11 +3,13 @@
 #include <string.h>
 
 #include "wav_types.h"
+#include "helper_functions.h"
 
-int is_bigendian(void);
+
 void verify_data(char *file_name, union header_data *file_bytes);
 void reverse_numerical_bytes(union header_data *file_bytes);
 void print_header_data(union header_data *file_bytes);
+
 
 void read_header(FILE *fp, union header_data *file_bytes, char *file_name) {
   int i;
@@ -51,24 +53,6 @@ void verify_data(char *file_name, union header_data *file_bytes) {
 }
 
 
-/* Machine should be little-endian to show header's numerical values correctly */
-int is_bigendian() {
-  union {
-    char bytes[4];
-    int val;
-  } test;
-
-  test.bytes[0] = 0;
-  test.bytes[1] = 0;
-  test.bytes[2] = 0;
-  test.bytes[3] = 0xff;
- 
-  return test.val == 0xff;
-}
-
-
-void reverse(char *s, int len);
-
 void reverse_numerical_bytes(union header_data *file_bytes) {
   reverse(file_bytes->header.chunk_size.int_bytes, 4);
   reverse(file_bytes->header.subchunk1_size.int_bytes, 4);
@@ -79,16 +63,6 @@ void reverse_numerical_bytes(union header_data *file_bytes) {
   reverse(file_bytes->header.block_align.short_bytes, 2);
   reverse(file_bytes->header.bits_per_sample.short_bytes, 2);
   reverse(file_bytes->header.subchunk2_size.int_bytes, 4);
-}
-
-void reverse(char *s, int l) {
-  char c;
-  int i;
-  for (i=0; i<l/2; i++) {
-    c = s[i];
-    s[i] = s[l-1-i];
-    s[l-1-i] = c;
-  }
 }
 
 
@@ -107,6 +81,5 @@ void print_header_data(union header_data *file_bytes) {
   printf("Bits per sample: %d\n", file_bytes->header.bits_per_sample.short_value);
   printf("Subchunk2 Id: %.4s\n", file_bytes->header.subchunk2_id);
   printf("Subchunk2 size: %d\n", file_bytes->header.subchunk2_size.int_value);
-  
 }
 
