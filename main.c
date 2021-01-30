@@ -27,16 +27,19 @@ int main(int argc, char *argv[]) {
   }
 
   union header_data *header_bytes = (union header_data *) malloc(sizeof(union header_data));
-
   read_header(fp_in, header_bytes, argv[1]);
 
+  short **data;
+  read_data(fp_in, header_bytes, data);
+
   fp_out = fopen("output.wav", "w");
-  short **data_bytes;
-  write_wav(fp_out, header_bytes, data_bytes);
+  
+  // write_wav(fp_out, header_bytes, data);
 
   fclose(fp_in);
   fclose(fp_out);
   free(header_bytes);
+  // free(data);
   return 0;
 }
 
