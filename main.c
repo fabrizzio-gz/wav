@@ -4,14 +4,13 @@
 
 #include "wav_types.h"
 #include "wav_header.h"
+#include "wav_data.h"
 #include "helper_functions.h"
 
 
-// void verify_machine(void);
-
 /* Print header data of a .wav file */
 int main(int argc, char *argv[]) {
-  FILE *fp;
+  FILE *fp_in, *fp_out;
 
   verify_machine();
   
@@ -20,19 +19,24 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
-  fp = fopen(argv[1], "r");
+  fp_in = fopen(argv[1], "r");
 
-  if (fp == NULL) {
+  if (fp_in == NULL) {
     fprintf(stderr, "Error: Invalid file or path: %s\n", argv[1]);
     return 2;
   }
 
-  union header_data *file_bytes = (union header_data *) malloc(sizeof(union header_data));
+  union header_data *header_bytes = (union header_data *) malloc(sizeof(union header_data));
 
-  read_header(fp, file_bytes, argv[1]);
+  read_header(fp_in, header_bytes, argv[1]);
 
-  fclose(fp);
-  free(file_bytes);
+  fp_out = fopen("output.wav", "w");
+  short **data_bytes;
+  write_wav(fp_out, header_bytes, data_bytes);
+
+  fclose(fp_in);
+  fclose(fp_out);
+  free(header_bytes);
   return 0;
 }
 
