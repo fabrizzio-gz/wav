@@ -25,7 +25,7 @@ void read_header(FILE *fp, union header_data *file_bytes, char *file_name) {
     reverse_numerical_bytes(file_bytes);
 
   verify_data(file_name, file_bytes);
-  print_header_data(file_bytes);
+  
 }
 
 

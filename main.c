@@ -10,9 +10,12 @@
 
 #define REVERSE 1
 #define PRINT 0x10
+#define WRITE 0x100
 
 int main(int argc, char *argv[]) {
-  FILE *fp_in, *fp_out;
+  FILE *fp_in = NULL, *fp_out = NULL;
+  char *input_file_name;
+  char *output_file_name = NULL;
   char flags = 0;
 
   verify_machine();
@@ -22,6 +25,7 @@ int main(int argc, char *argv[]) {
     return 1;
   }
 
+  /* Process flags */
   int i;
   for (i=1; i < argc ; i++) {
     if (*argv[i] == '-') {
@@ -32,6 +36,24 @@ int main(int argc, char *argv[]) {
       switch (argv[i][1]) {
       case 'r':
         flags |= REVERSE;
+        flags |= WRITE;
+        break;
+      case 'o':
+        flags |= WRITE;
+        i++;
+        if (i < argc && *argv[i] != '-')
+          // Verify the file doesn't exit
+          if (fopen(argv[i], "r") == NULL)
+            output_file_name = argv[i];
+          else {
+            fprintf(stderr, "Invalid output file.\n"
+                    "File %s already exists\n", argv[i]);
+            return 1;
+          } 
+        else {
+          fprintf(stderr, "Specify a valid output file name after -o flag\n");
+          return 1;
+        }
         break;
       case 'p':
         flags |= PRINT;
@@ -40,32 +62,59 @@ int main(int argc, char *argv[]) {
         fprintf(stderr, "Invalid option: %s\n", argv[i]);
         return 1;
       }
+    } else {
+      static int first_file = 1;
+      if (first_file) {
+        fp_in = fopen(argv[i], "r");
+        input_file_name = argv[i];
+        first_file = 0;
+        if (fp_in == NULL) {
+          fprintf(stderr, "Error: Invalid file or path: %s\n", argv[i]);
+          return 2;
+        }
+      } else {
+          fprintf(stderr, "Error: Only one input file can be processed\n");
+          return 2;
+      }
     }
-      
-  } 
-
-  fp_in = fopen(argv[1], "r");
+  }
 
   if (fp_in == NULL) {
-    fprintf(stderr, "Error: Invalid file or path: %s\n", argv[1]);
+    fprintf(stderr, "Specify an input file\n"
+            "Usage: wave [flags] <file>\n");
     return 2;
   }
 
-  union header_data *header_bytes = (union header_data *) malloc(sizeof(union header_data));
-  read_header(fp_in, header_bytes, argv[1]);
+  /* Print wave file header by default if no
+   * flags are given */
+  if (argc == 2 && fp_in)
+    flags |= PRINT;
 
-  short *data = read_data(fp_in, header_bytes);
+  union header_data *header;
+  short *data;
+  
+  header = (union header_data *) malloc(sizeof(union header_data));
+  read_header(fp_in, header, input_file_name);
+  data = read_data(fp_in, header);
 
-  reverse_data(data, header_bytes);
+  if (flags & PRINT)
+    print_header_data(header);
+  
+  if (flags & REVERSE)
+    reverse_data(data, header);
 
-  fp_out = fopen("output.wav", "w");
-  write_wav(fp_out, header_bytes, data);
-
+  if (flags & WRITE) {
+    if (!output_file_name)
+      output_file_name = "output.wav";
+    fp_out = fopen(output_file_name, "w");
+    write_wav(fp_out, header, data);
+  }
+  
   fclose(fp_in);
-  fclose(fp_out);
-  free(header_bytes);
+  if (fp_out)
+    fclose(fp_out);
+  free(header);
   free(data);
-  // free(data);
   return 0;
 }
 
