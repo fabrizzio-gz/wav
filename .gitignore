@@ -8,4 +8,6 @@ wave
 test.py
 #*#
 output.wav
+#main.c#
+.*#
 
