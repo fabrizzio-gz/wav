@@ -4,7 +4,7 @@
 #include "wav_types.h"
 
 short *read_data(FILE *fp_in, union header_data *header_bytes){
-  short *data_pointer, *data;
+  short *data;
   
   short num_channels = header_bytes->header.num_channels.short_value;
   short bits_per_sample = header_bytes->header.bits_per_sample.short_value;
@@ -21,10 +21,10 @@ short *read_data(FILE *fp_in, union header_data *header_bytes){
   }
 
   int bytes_per_sample = bits_per_sample / 8;
-  int num_samples_per_channel = data_size / bytes_per_sample;
+  int num_samples_per_channel = data_size / bytes_per_sample / num_channels;
 
-  data_pointer = (short *) malloc(num_samples_per_channel * num_channels * sizeof(short));
-  data = data_pointer;
+  data = (short *) malloc(num_samples_per_channel * num_channels * sizeof(short));
+  
 
   if (data == NULL) {
     fprintf(stderr, "Error: Couldn't allocate memory for samples\n");
@@ -32,25 +32,19 @@ short *read_data(FILE *fp_in, union header_data *header_bytes){
   }
 
   int i, j;
+  short *dp = data;
   for (i=0; i < num_samples_per_channel; i++) {
-    
- 
     for (j=0; j < num_channels; j++) {
-      // printf("Reading sample %d\n", i);
-      if (fread(data, bytes_per_sample, 1, fp_in) != 1) {
+      if (fread(dp, bytes_per_sample, 1, fp_in) != 1) {
         fprintf(stderr, "Error: Couldn't read all samples\n");
         exit(6);
       }  
-      data++;
+      dp++;
     }
-    printf("Sample 1L: %d\n", data[0]);
-    printf("Sample 1R: %d\n", data[1]);
-    break;
   }
-  printf("Bytes per sample: %d\n", bytes_per_sample);
-  return data_pointer;
-
   
+  printf("Bytes per sample: %d\n", bytes_per_sample);
+  return data; 
 }
 
 void write_wav(FILE *fp_out, union header_data *header_bytes, short *data[]) {
