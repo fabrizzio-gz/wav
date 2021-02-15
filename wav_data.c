@@ -47,8 +47,15 @@ short *read_data(FILE *fp_in, union header_data *header_bytes){
   return data; 
 }
 
-void write_wav(FILE *fp_out, union header_data *header_bytes, short *data[]) {
+void write_wav(FILE *fp_out, union header_data *header_bytes, short *data) {
   fwrite(header_bytes, sizeof(union header_data), 1, fp_out);
-}
 
+  short num_channels = header_bytes->header.num_channels.short_value;
+  short bits_per_sample = header_bytes->header.bits_per_sample.short_value;
+  int data_size = header_bytes->header.subchunk2_size.int_value;
+   int bytes_per_sample = bits_per_sample / 8;
+  int num_samples_per_channel = data_size / bytes_per_sample / num_channels;
+
+  fwrite(data, sizeof(short), num_samples_per_channel * num_channels, fp_out);
+}
 

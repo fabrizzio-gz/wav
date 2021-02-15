@@ -32,8 +32,9 @@ int main(int argc, char *argv[]) {
   short *data = read_data(fp_in, header_bytes);
 
   fp_out = fopen("output.wav", "w");
+
   
-  // write_wav(fp_out, header_bytes, data);
+  write_wav(fp_out, header_bytes, data);
 
   fclose(fp_in);
   fclose(fp_out);
