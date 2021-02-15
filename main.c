@@ -5,6 +5,7 @@
 #include "wav_types.h"
 #include "wav_header.h"
 #include "wav_data.h"
+#include "wav_process.h"
 #include "helper_functions.h"
 
 
@@ -31,9 +32,9 @@ int main(int argc, char *argv[]) {
 
   short *data = read_data(fp_in, header_bytes);
 
-  fp_out = fopen("output.wav", "w");
+  reverse_data(data, header_bytes);
 
-  
+  fp_out = fopen("output.wav", "w");
   write_wav(fp_out, header_bytes, data);
 
   fclose(fp_in);
