@@ -8,17 +8,41 @@
 #include "wav_process.h"
 #include "helper_functions.h"
 
+#define REVERSE 1
+#define PRINT 0x10
 
-/* Print header data of a .wav file */
 int main(int argc, char *argv[]) {
   FILE *fp_in, *fp_out;
+  char flags = 0;
 
   verify_machine();
   
-  if (argc != 2) {
-    printf("Usage: wave <file>\n");
+  if (argc < 2) {
+    printf("Usage: wave [flags] <file>\n");
     return 1;
   }
+
+  int i;
+  for (i=1; i < argc ; i++) {
+    if (*argv[i] == '-') {
+      if (strlen(argv[i]) != 2) {
+        fprintf(stderr, "Invalid option: %s\n", argv[i]);
+        return 1;
+      }
+      switch (argv[i][1]) {
+      case 'r':
+        flags |= REVERSE;
+        break;
+      case 'p':
+        flags |= PRINT;
+        break;
+      default:
+        fprintf(stderr, "Invalid option: %s\n", argv[i]);
+        return 1;
+      }
+    }
+      
+  } 
 
   fp_in = fopen(argv[1], "r");
 
