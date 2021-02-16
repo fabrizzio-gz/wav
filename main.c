@@ -9,9 +9,9 @@
 #include "helper_functions.h"
 
 #define REVERSE 1
-#define PRINT 0x10
-#define WRITE 0x100
-#define MUTE_LEFT 0x1000
+#define PRINT 1 << 1
+#define WRITE 1 << 2
+#define MUTE_LEFT 1 << 3
 
 int main(int argc, char *argv[]) {
   FILE *fp_in = NULL, *fp_out = NULL;
