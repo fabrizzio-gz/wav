@@ -11,6 +11,7 @@
 #define REVERSE 1
 #define PRINT 0x10
 #define WRITE 0x100
+#define MUTE_LEFT 0x1000
 
 int main(int argc, char *argv[]) {
   FILE *fp_in = NULL, *fp_out = NULL;
@@ -58,6 +59,9 @@ int main(int argc, char *argv[]) {
       case 'p':
         flags |= PRINT;
         break;
+      case 'L':
+        flags |= MUTE_LEFT;
+        break;
       default:
         fprintf(stderr, "Invalid option: %s\n", argv[i]);
         return 1;
@@ -102,6 +106,9 @@ int main(int argc, char *argv[]) {
   
   if (flags & REVERSE)
     reverse_data(data, header);
+
+  if (flags & MUTE_LEFT)
+    mute(data, 'l', header);
 
   if (flags & WRITE) {
     if (!output_file_name)
