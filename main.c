@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
     reverse_data(data, header);
 
   if (flags & MUTE_LEFT)
-    mute(data, 'l', header);
+    mute(data, header, 'l');
 
   if (flags & WRITE) {
     if (!output_file_name)

@@ -3,11 +3,11 @@
 
 #include "wav_types.h"
 
-int parse_header(union header_data *header_bytes);
+int get_samples_per_channel(union header_data *header_bytes);
 
 void reverse_data(short *data, union header_data *header_bytes) {
 
-  int num_samples_per_channel = parse_header(header_bytes);
+  int num_samples_per_channel = get_samples_per_channel(header_bytes);
   short num_channels = header_bytes->header.num_channels.short_value;
 
   int i, j;
@@ -21,14 +21,15 @@ void reverse_data(short *data, union header_data *header_bytes) {
     }
 }
 
-void mute(short *data, char channel, union header_data *header_bytes) {
-  int num_samples_per_channel = parse_header(header_bytes);
+void mute(short *data, union header_data *header_bytes, char channel) {
+  int num_samples_per_channel = get_samples_per_channel(header_bytes);
   short num_channels = header_bytes->header.num_channels.short_value;
+
   
   
 }
 
-int parse_header(union header_data *header_bytes) {
+int get_samples_per_channel(union header_data *header_bytes) {
   int num_samples_per_channel;
   
   short num_channels = header_bytes->header.num_channels.short_value;
