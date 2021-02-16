@@ -2,6 +2,7 @@
 #define WAV_PROCESS_H
 
 void reverse_data(short *data, union header_data *header_bytes);
-void mute(short *data, union header_data *header_bytes, char channel);
+void mute_left(short *data, union header_data *header_bytes);
+void mute_right(short *data, union header_data *header_bytes);
 
 #endif

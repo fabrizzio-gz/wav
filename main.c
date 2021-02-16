@@ -12,6 +12,7 @@
 #define PRINT 1 << 1
 #define WRITE 1 << 2
 #define MUTE_LEFT 1 << 3
+#define MUTE_RIGHT 1 << 4
 
 int main(int argc, char *argv[]) {
   FILE *fp_in = NULL, *fp_out = NULL;
@@ -61,6 +62,11 @@ int main(int argc, char *argv[]) {
         break;
       case 'L':
         flags |= MUTE_LEFT;
+        flags |= WRITE;
+        break;
+      case 'R':
+        flags |= MUTE_RIGHT;
+        flags |= WRITE;
         break;
       default:
         fprintf(stderr, "Invalid option: %s\n", argv[i]);
@@ -99,16 +105,21 @@ int main(int argc, char *argv[]) {
   
   header = (union header_data *) malloc(sizeof(union header_data));
   read_header(fp_in, header, input_file_name);
-  data = read_data(fp_in, header);
 
   if (flags & PRINT)
     print_header_data(header);
+
+  if (flags & WRITE)
+    data = read_data(fp_in, header);
   
   if (flags & REVERSE)
     reverse_data(data, header);
 
   if (flags & MUTE_LEFT)
-    mute(data, header, 'l');
+    mute_left(data, header);
+
+  if (flags & MUTE_RIGHT)
+    mute_right(data, header);
 
   if (flags & WRITE) {
     if (!output_file_name)

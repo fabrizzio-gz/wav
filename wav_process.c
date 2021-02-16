@@ -4,6 +4,7 @@
 #include "wav_types.h"
 
 int get_samples_per_channel(union header_data *header_bytes);
+void mute(short *data, union header_data *header_bytes, char channel);
 
 void reverse_data(short *data, union header_data *header_bytes) {
 
@@ -21,12 +22,29 @@ void reverse_data(short *data, union header_data *header_bytes) {
     }
 }
 
+void mute_left(short *data, union header_data *header_bytes) {
+  mute(data, header_bytes, 'l');
+}
+
+void mute_right(short *data, union header_data *header_bytes) {
+  mute(data, header_bytes, 'r');
+}
+
 void mute(short *data, union header_data *header_bytes, char channel) {
   int num_samples_per_channel = get_samples_per_channel(header_bytes);
   short num_channels = header_bytes->header.num_channels.short_value;
 
-  
-  
+  if (num_channels != 2) {
+    fprintf(stderr, "Can't mute channels for other than 2 channels\n"
+            "Input file has %d channels", num_channels);
+    exit(7);
+  }
+
+  // Left channel comes first, then right channel.
+  int channel_index = channel == 'l' ? 0 : 1;
+  int i;
+  for (i = 0; i < num_samples_per_channel; i++)
+    data[num_channels*i + channel_index] = 0;
 }
 
 int get_samples_per_channel(union header_data *header_bytes) {
