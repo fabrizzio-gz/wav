@@ -129,10 +129,12 @@ int main(int argc, char *argv[]) {
   }
   
   fclose(fp_in);
+  free(header);
   if (fp_out)
     fclose(fp_out);
-  free(header);
-  free(data);
+  if (flags & WRITE)
+    free(data);
+  
   return 0;
 }
 
