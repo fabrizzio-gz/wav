@@ -1,26 +1,45 @@
-# Process WAVE files
+# WAV utility
 
-Retrieve WAVE (WAV) files header data and samples.
+Retrieve WAVE (.wav) files header information and perform simple manipulations.
 
-## Retrieve the header data
+- Only "canonical" (44-bytes) headers are supported.
+- Only 16-bit audio samples of one or two channels are supported.
 
-Use the `wav_header.c` program to retrieve the header information of wave files. Only standard 44-bytes headers are supported.
+## Compilation
 
-### Usage
-
-Compile from the command line as:
-
-```
-gcc header_wav.c -o wave
-```
-
-Execute on files as:
+Compile as:
 
 ```
-./wave my_file.wav
+$ gcc main.c helper_functions.c wav_data.c wav_header.c wav_process.c -o wave
 ```
 
-## Retrive samples
+Alternatively, run Makefile:
 
-TODO
+```
+$ make
+```
+
+## Usage
+
+Print the header information:
+
+```
+./wave file.wave
+```
+
+Execute modifications and write on a new file with the following options:
+
+- `-L`, to mute left channel.
+- `-o OUTPUTFILE`, to specifiy ouput filename.
+- `-p`, to print the header information.
+- `-r`, to reverse the audio samples.
+- `-R`, to mute right channel.
+
+### Example
+
+To reverse audio samples and mute left channel:
+
+```
+./wave -r -L my_file.wav
+```
 
