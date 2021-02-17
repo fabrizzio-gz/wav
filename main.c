@@ -36,6 +36,9 @@ int main(int argc, char *argv[]) {
         return 1;
       }
       switch (argv[i][1]) {
+      case 'h':
+        print_help();
+        return 0;
       case 'r':
         flags |= REVERSE;
         flags |= WRITE;
