@@ -14,6 +14,13 @@
 #define MUTE_LEFT 1 << 3
 #define MUTE_RIGHT 1 << 4
 
+/*TODO
+ *Add messages to actions.
+ *Verify reverse works on mono too.
+ *Check samples are 16 or 8 bits, if not, exit.
+ */
+
+
 int main(int argc, char *argv[]) {
   FILE *fp_in = NULL, *fp_out = NULL;
   char *input_file_name;
