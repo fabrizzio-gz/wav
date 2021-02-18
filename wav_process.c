@@ -14,12 +14,14 @@ void reverse_data(short *data, union header_data *header_bytes) {
   int i, j;
   short temp;
   int end = (num_samples_per_channel - 1) * num_channels;
+  printf("Reversing samples...");
   for (i = 0; i < num_samples_per_channel/2; i++) 
     for (j = 0; j < num_channels; j++) {
       temp = data[i*num_channels + j];
       data[i*num_channels + j] = data[end - i * num_channels + j];
       data[end - i * num_channels + j] = temp;
     }
+  printf(" done.\n");
 }
 
 void mute_left(short *data, union header_data *header_bytes) {
@@ -35,16 +37,18 @@ void mute(short *data, union header_data *header_bytes, char channel) {
   short num_channels = header_bytes->header.num_channels.short_value;
 
   if (num_channels != 2) {
-    fprintf(stderr, "Can't mute channels for other than 2 channels\n"
-            "Input file has %d channels", num_channels);
+    fprintf(stderr, "Mute possible with 2 channels\n"
+            "Input file has %d channel(s)\n", num_channels);
     exit(7);
   }
 
+  printf("Muting %s channel...", channel == 'l' ? "left": "right");
   // Left channel comes first, then right channel.
   int channel_index = channel == 'l' ? 0 : 1;
   int i;
   for (i = 0; i < num_samples_per_channel; i++)
     data[num_channels*i + channel_index] = 0;
+  printf(" done.\n");
 }
 
 int get_samples_per_channel(union header_data *header_bytes) {

@@ -15,9 +15,7 @@
 #define MUTE_RIGHT 1 << 4
 
 /*TODO
- *Add messages to actions.
  *Verify reverse works on mono too.
- *Check samples are 16 or 8 bits, if not, exit.
  */
 
 
@@ -134,8 +132,8 @@ int main(int argc, char *argv[]) {
   if (flags & WRITE) {
     if (!output_file_name)
       output_file_name = "output.wav";
-    fp_out = fopen(output_file_name, "w");
-    write_wav(fp_out, header, data);
+    fp_out = fopen(output_file_name, "w"); 
+    write_wav(fp_out, header, data, output_file_name);
   }
   
   fclose(fp_in);
