@@ -13,6 +13,7 @@
 #define WRITE 1 << 2
 #define MUTE_LEFT 1 << 3
 #define MUTE_RIGHT 1 << 4
+#define CONTROL_VOLUME 1 << 5
 
 /*TODO
  *Verify reverse works on mono too.
@@ -23,6 +24,7 @@ int main(int argc, char *argv[]) {
   FILE *fp_in = NULL, *fp_out = NULL;
   char *input_file_name;
   char *output_file_name = NULL;
+  char *volume_control = 0; // Positive or Negative
   char flags = 0;
 
   verify_machine();
@@ -46,6 +48,10 @@ int main(int argc, char *argv[]) {
         return 0;
       case 'r':
         flags |= REVERSE;
+        flags |= WRITE;
+        break;
+      case 'v':
+        flags |= CONTROL_VOLUME;
         flags |= WRITE;
         break;
       case 'o':
@@ -128,6 +134,9 @@ int main(int argc, char *argv[]) {
 
   if (flags & MUTE_RIGHT)
     mute_right(data, header);
+
+  if (flags & CONTROL_VOLUME)
+    control_volume(data, header);
 
   if (flags & WRITE) {
     if (!output_file_name)
