@@ -57,10 +57,15 @@ void control_volume(short *data, union header_data *header_bytes) {
   short num_channels = header_bytes->header.num_channels.short_value;
   int percent = 10;
   printf("Increasing Volume by %d", percent);
-  int ns, nc;
+  int ns, nc, amplified_vol;
   for (nc = 0; nc < num_channels; nc++){
     for (ns = 0; ns < num_samples_per_channel; ns++){
-      data[num_channels*ns + nc] = data[num_channels*ns + nc] * percent;
+      amplified_vol = data[num_channels*ns + nc] * percent;
+      // Check for Overflow
+      if (data[num_channels*ns + nc] != 0 && amplified_vol / data[num_channels*ns + nc]  != percent) {
+        fprintf(stderr, "Integer Overflow\n");
+      }
+      data[num_channels*ns + nc] = amplified_vol;
     }
   printf(" done.\n");
   }
