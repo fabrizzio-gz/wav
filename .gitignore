@@ -11,4 +11,5 @@ output.wav
 #main.c#
 .*#
 *.wav
+program_structure
 
