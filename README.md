@@ -15,7 +15,7 @@ $ make
 Alternatively:
 
 ```
-$ gcc main.c helper_functions.c wav_data.c wav_header.c wav_process.c -o wave
+$ gcc src/main.c src/helper_functions.c src/wav_data.c src/wav_header.c src/wav_process.c -o wave
 ```
 
 ## Usage
