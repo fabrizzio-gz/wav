@@ -1,6 +1,6 @@
 # WAV
 
-Perform simple manipulations to .wav file audio samples and retrieve its header information.
+Perform simple manipulations to .wav files and retrieve its header information.
 
 - Supports only "canonical" (44 bytes) headers and 16-bit audio simples with one or two channels.
 
@@ -18,9 +18,9 @@ Alternatively:
 $ gcc src/main.c src/helper_functions.c src/wav_data.c src/wav_header.c src/wav_process.c -o wave
 ```
 
-## Usage
-
 Compilation will generate a executable file called `wave`.
+
+## Usage
 
 Execute modifications and write to a new file with the following options:
 
